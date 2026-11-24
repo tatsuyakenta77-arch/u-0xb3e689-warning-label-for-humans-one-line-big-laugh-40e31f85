@@ -25,9 +25,15 @@ const label =
 const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? "/output";
 
 // The gate allows 1–160 characters of UTF-8 text, not only
-// whitespace, on a single line. Refuse to ship anything outside
-// that: a second line would stop being one label, and padding
-// past 160 characters would fail the gate outright.
+// whitespace, on a single line — and the judge's first criterion
+// is that the text IS a warning label for humans, so the code
+// enforces the label form too: it must open with "WARNING:".
+// Refuse to ship anything outside that: a second line would stop
+// being one label, and padding past 160 characters would fail
+// the gate outright.
+if (!label.startsWith("WARNING:")) {
+  throw new Error("entry label must open with WARNING:");
+}
 if (label.length < 1 || label.length > 160) {
   throw new Error(`entry label is ${label.length} characters, outside the 1-160 limit`);
 }
